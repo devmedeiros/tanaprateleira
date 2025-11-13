@@ -39,6 +39,7 @@ CREATE MATERIALIZED VIEW bronze.olist_geolocation
 TBLPROPERTIES (
   "quality" = "bronze",
   "domain" = "customers",
+  "source_system" = "csv",
   "subdomain" = "geolocation",
   "layer" = "raw_ingestion",
   "update_frequency" = "daily"
