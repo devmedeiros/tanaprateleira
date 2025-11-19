@@ -31,6 +31,9 @@ SELECT
     WHEN product_id IS NULL THEN 'invalid_null_id'
     WHEN product_category_name IS NULL OR TRIM(product_category_name) = '' THEN 'missing_category'
     WHEN product_weight_g < 0 THEN 'negative_weight'
+    WHEN product_length_cm < 0 THEN 'negative_length'
+    WHEN product_height_cm < 0 THEN 'negative_height'
+    WHEN product_width_cm < 0 THEN 'negative_width'
     ELSE 'valid'
   END AS data_quality_flag,
   _source_file,

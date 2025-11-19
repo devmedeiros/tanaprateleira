@@ -29,7 +29,7 @@ SELECT
   CASE 
     WHEN order_id IS NULL THEN 'invalid_null_id'
     WHEN order_purchase_timestamp IS NULL THEN 'missing_purchase_date'
-    WHEN order_status NOT IN ('PENDING_PAYMENT', 'PROCESSING', 'SHIPPED', 'DELIVERED', 'UNAVAILABLE', 'CANCELED')
+    WHEN order_status NOT IN ('PENDING_PAYMENT', 'PROCESSING', 'SHIPPED', 'DELIVERED', 'UNAVAILABLE', 'CANCELED', 'APPROVED', 'INVOICED')
       THEN 'invalid_status'
     ELSE 'valid'
   END AS data_quality_flag,
@@ -98,7 +98,7 @@ SELECT
   CAST(payment_value AS DECIMAL(10, 2)) AS payment_value,
   CASE 
     WHEN order_id IS NULL THEN 'invalid_null_order_id'
-    WHEN payment_value <= 0 THEN 'invalid_payment_value'
+    WHEN payment_value < 0 THEN 'invalid_payment_value'
     WHEN payment_type NOT IN ('credit_card', 'boleto', 'debit_card', 'voucher')
       THEN 'invalid_payment_type'
     ELSE 'valid'
