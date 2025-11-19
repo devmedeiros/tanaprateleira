@@ -29,7 +29,7 @@ SELECT
   CASE 
     WHEN order_id IS NULL THEN 'invalid_null_id'
     WHEN order_purchase_timestamp IS NULL THEN 'missing_purchase_date'
-    WHEN order_status NOT IN ('PENDING_PAYMENT', 'PROCESSING', 'SHIPPED', 'DELIVERED', 'UNAVAILABLE', 'CANCELED', 'APPROVED', 'INVOICED')
+    WHEN UPPER(TRIM(order_status)) NOT IN ('PENDING_PAYMENT', 'PROCESSING', 'SHIPPED', 'DELIVERED', 'UNAVAILABLE', 'CANCELED', 'APPROVED', 'INVOICED', 'CREATED')
       THEN 'invalid_status'
     ELSE 'valid'
   END AS data_quality_flag,

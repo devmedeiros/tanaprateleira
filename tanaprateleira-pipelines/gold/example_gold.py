@@ -12,18 +12,18 @@ from pyspark.sql import functions as F
 
 # COMMAND ----------
 
-orders_path = "`catalog-impacta-capstone`.silver.olist_orders"
+orders_path = "`catalog-impacta-capstone`.silver.orders"
 orders_df = spark.read.table(orders_path)
 
 # COMMAND ----------
 
-orders_df.display()
+orders_df.groupBy("order_status").count().display()
 
 # COMMAND ----------
 
-orders_df = spark.read.table("`catalog-impacta-capstone`.silver.olist_orders")
-order_items_df = spark.read.table("`catalog-impacta-capstone`.silver.olist_order_items")
-products_df = spark.read.table("`catalog-impacta-capstone`.silver.olist_products")
+orders_df = spark.read.table("`catalog-impacta-capstone`.silver.orders")
+order_items_df = spark.read.table("`catalog-impacta-capstone`.silver.order_items")
+products_df = spark.read.table("`catalog-impacta-capstone`.silver.products")
 
 filtered_orders_df = orders_df.filter(
     (F.col("order_status").isin(["unavailable", "canceled"]) == False) &
