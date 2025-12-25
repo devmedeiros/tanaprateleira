@@ -608,3 +608,61 @@ sales_df, acquisitions_df, final_stock = generate_synthetic_tnp(
         "placed_outlier_rate": 0.001,
     }
 )
+
+# COMMAND ----------
+
+# MAGIC %sql
+# MAGIC select 
+# MAGIC event_ts::date,
+# MAGIC sum(quantity)
+# MAGIC from workspace.raw.sales_events_sku1
+# MAGIC where status = 'approved'
+# MAGIC and sales_id not in (select sales_id from workspace.raw.sales_events_sku1 where status = 'canceled')
+# MAGIC group by 1
+# MAGIC order by event_ts
+
+# COMMAND ----------
+
+# MAGIC %sql
+# MAGIC
+# MAGIC with params as (
+# MAGIC   select
+# MAGIC     cast('2023-01-01' as date) as d_start,
+# MAGIC     cast('2025-12-20'   as date) as d_end,
+# MAGIC     cast(0 as int) as initial_stock
+# MAGIC ),
+# MAGIC dates as (
+# MAGIC   select explode(sequence(p.d_start, p.d_end, interval 1 day)) as dt
+# MAGIC   from params p
+# MAGIC ),
+# MAGIC acq as (
+# MAGIC   select
+# MAGIC     to_date(from_utc_timestamp(event_ts,'America/Sao_Paulo')) as dt,
+# MAGIC     sum(quantity_received) as qty_received
+# MAGIC   from workspace.raw.stock_acquisitions_sku1
+# MAGIC   group by 1
+# MAGIC ),
+# MAGIC sales_approved as (
+# MAGIC   select
+# MAGIC     to_date(from_utc_timestamp(event_ts,'America/Sao_Paulo')) as dt,
+# MAGIC     sum(quantity) as qty_approved
+# MAGIC   from workspace.raw.sales_events_sku1
+# MAGIC   where status = 'approved'
+# MAGIC   group by 1
+# MAGIC ),
+# MAGIC daily as (
+# MAGIC   select
+# MAGIC     d.dt,
+# MAGIC     coalesce(a.qty_received, 0) as qty_received,
+# MAGIC     coalesce(s.qty_approved, 0) as qty_approved
+# MAGIC   from dates d
+# MAGIC   left join acq a on a.dt = d.dt
+# MAGIC   left join sales_approved s on s.dt = d.dt
+# MAGIC )
+# MAGIC select
+# MAGIC   dt as date,
+# MAGIC   (select initial_stock from params) 
+# MAGIC   + sum(qty_received) over (order by dt rows between unbounded preceding and current row)
+# MAGIC   - sum(qty_approved) over (order by dt rows between unbounded preceding and current row) as estoque_final
+# MAGIC from daily
+# MAGIC order by dt;
