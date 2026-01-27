@@ -592,8 +592,8 @@ sales_df, acquisitions_df, final_stock = generate_synthetic_tnp(
     cancel_rate=0.25,
     placed_rate=0.5,  # usado apenas se cancel_rate não for fornecido; aqui cancel_rate prevalece
     seed=123,
-    catalog="workspace",   # ajuste conforme seu ambiente (Unity Catalog: nome_do_catalogo)
-    schema="raw",
+    catalog="`catalog-impacta-capstone`",   # ajuste conforme seu ambiente (Unity Catalog: nome_do_catalogo)
+    schema="bronze",
     sales_table="sales_events_sku1",
     acquisitions_table="stock_acquisitions_sku1",
     write_mode="table",         # 'none' | 'table' | 'view'
@@ -615,9 +615,9 @@ sales_df, acquisitions_df, final_stock = generate_synthetic_tnp(
 # MAGIC select 
 # MAGIC event_ts::date,
 # MAGIC sum(quantity)
-# MAGIC from workspace.raw.sales_events_sku1
+# MAGIC from `catalog-impacta-capstone`.bronze.sales_events_sku1
 # MAGIC where status = 'approved'
-# MAGIC and sales_id not in (select sales_id from workspace.raw.sales_events_sku1 where status = 'canceled')
+# MAGIC and sales_id not in (select sales_id from `catalog-impacta-capstone`.bronze.sales_events_sku1 where status = 'canceled')
 # MAGIC group by 1
 # MAGIC order by event_ts
 
