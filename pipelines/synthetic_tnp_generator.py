@@ -639,14 +639,14 @@ sales_df, acquisitions_df, final_stock = generate_synthetic_tnp(
 # MAGIC   select
 # MAGIC     to_date(from_utc_timestamp(event_ts,'America/Sao_Paulo')) as dt,
 # MAGIC     sum(quantity_received) as qty_received
-# MAGIC   from workspace.raw.stock_acquisitions_sku1
+# MAGIC   from `catalog-impacta-capstone`.bronze.stock_acquisitions_sku1
 # MAGIC   group by 1
 # MAGIC ),
 # MAGIC sales_approved as (
 # MAGIC   select
 # MAGIC     to_date(from_utc_timestamp(event_ts,'America/Sao_Paulo')) as dt,
 # MAGIC     sum(quantity) as qty_approved
-# MAGIC   from workspace.raw.sales_events_sku1
+# MAGIC   from `catalog-impacta-capstone`.bronze.sales_events_sku1
 # MAGIC   where status = 'approved'
 # MAGIC   group by 1
 # MAGIC ),

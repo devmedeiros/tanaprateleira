@@ -1,0 +1,22 @@
+resources:
+  jobs:
+    tanaprateleira:
+      name: tanaprateleira
+      schedule:
+        quartz_cron_expression: 18 0 6 * * ?
+        timezone_id: America/Sao_Paulo
+        pause_status: UNPAUSED
+      tasks:
+        - task_key: synthetic_tnp_generator
+          notebook_task:
+            notebook_path: ../pipelines/synthetic_tnp_generator.py
+      notification_settings:
+        no_alert_for_skipped_runs: true
+      email_notifications:
+        no_alert_for_skipped_runs: true
+        on_failure:
+          - daniel.sramos@aluno.faculdadeimpacta.com.br
+        on_success:
+          - daniel.sramos@aluno.faculdadeimpacta.com.br
+      queue:
+        enabled: true
